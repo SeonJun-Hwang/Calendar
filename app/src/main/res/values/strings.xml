@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Calander</string>
+
+    <string name="item_monthly">Monthly</string>
+    <string name="item_weekly">Weekly</string>
+    <string name="item_daily">Daily</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+
 </resources>
