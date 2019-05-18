@@ -6,4 +6,7 @@
 
     <color name="colorSplashBack">#ffffff</color>
     <color name="colorMainBottomBack">#C0C0C0</color>
+
+    <color name="greyed_out">#979797</color>
+    <color name="today_color">#4CAF50</color>
 </resources>

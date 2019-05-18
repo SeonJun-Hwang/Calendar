@@ -4,7 +4,10 @@
     <string name="item_monthly">Monthly</string>
     <string name="item_weekly">Weekly</string>
     <string name="item_daily">Daily</string>
+    <string name="lt"><![CDATA[<]]></string>
+    <string name="gt"><![CDATA[>]]></string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="schedule_label">일정 등록</string>
+    <string name="schedule_title">일정</string>
 
 </resources>

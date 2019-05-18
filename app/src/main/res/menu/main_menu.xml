@@ -2,16 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/Monthly"
-          android:title="@string/item_monthly"
-          android:icon="@drawable/ic_monthly"/>
+          android:title="@string/item_monthly"/>
 
     <item android:id="@+id/Weekly"
-          android:title="@string/item_weekly"
-          android:icon="@drawable/ic_weekly"/>
+          android:title="@string/item_weekly"/>
 
     <item android:id="@+id/Daily"
-          android:title="@string/item_daily"
-          android:icon="@drawable/ic_daily"/>
-
+          android:title="@string/item_daily"/>
 
 </menu>

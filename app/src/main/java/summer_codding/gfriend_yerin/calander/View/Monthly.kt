@@ -1,12 +1,13 @@
-package summer_codding.gfriend_yerin.calander
+package summer_codding.gfriend_yerin.calander.View
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import summer_codding.gfriend_yerin.calander.R
 
-class DailyFragment : Fragment() {
+class MonthlyFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,16 +19,13 @@ class DailyFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val view = inflater.inflate(R.layout.fragment_monthly, container, false)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_daily, container, false)
+
+
+
+        return view
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            DailyFragment().apply {
-                arguments = Bundle().apply {
-                }
-            }
-    }
 }

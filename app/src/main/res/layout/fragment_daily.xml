@@ -1,15 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".daily">
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+            android:id="@+id/daily_header"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="DailyFragrment"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="5">
 
-</FrameLayout>
+        <Button
+                android:id="@+id/daily_go_before_month"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/lt"
+                android:textSize="25sp"
+                android:gravity="center"
+                android:background="@null"
+                android:layout_weight="1"/>
+
+        <TextView
+                android:id="@+id/daily_year_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textSize="25sp"/>
+
+        <Button
+                android:id="@+id/daily_go_next_month"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/gt"
+                android:textSize="25sp"
+                android:gravity="center"
+                android:background="@null"
+                android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_below="@id/daily_header"
+            android:id="@+id/daily_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+</RelativeLayout>
