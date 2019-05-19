@@ -1,6 +1,7 @@
 package summer_codding.gfriend_yerin.calander.Data
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
@@ -15,4 +16,7 @@ interface ScheduleDao {
 
     @Insert
     fun pushData(schedule : Schedule)
+
+    @Query("DELETE FROM Schedule Where date = (:date)")
+    fun delete(date : String)
 }

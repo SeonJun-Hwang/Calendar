@@ -85,9 +85,7 @@ class WeeklyFragment : Fragment() {
 
             val content = MainActivity.schedules[checkDay]
             if (content != null) {
-                val title: String =
-                    checkDay.year.toString() + "/" + checkDay.month.toString() + "/" + checkDay.day.toString()
-                items.add(ScheduleVO(title, content))
+                items.add(ScheduleVO(checkDay, content))
             }
         }
 

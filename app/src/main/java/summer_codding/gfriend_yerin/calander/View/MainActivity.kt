@@ -1,6 +1,8 @@
 package summer_codding.gfriend_yerin.calander.View
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -57,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
             // Arraylist to HashMap
             for (data in dataList) {
-                Log.e(TAG, data.date + " - " + data.contents)
+//                Log.e(TAG, data.date + " - " + data.contents)
                 val toInt = data.date.toInt()
 
                 // MONTH - DIV 10000 ( <yyyy>mmdd )
@@ -117,24 +119,34 @@ class MainActivity : AppCompatActivity() {
 
     private fun initFloating() {
         main_add_schedule.setOnClickListener {
-
             val pos = main_tablayout.selectedTabPosition
-            val intent = Intent(this, ScheduleActivity::class.java)
+            var year = 0;
+            var month = 0;
+            var day = 0
 
-            if (pos == 0) {
-                val fragment: Fragment = monthly
-                intent.putExtra("year", fragment.monthly_calendar.selectedDate!!.year)
-                intent.putExtra("month", fragment.monthly_calendar.selectedDate!!.month)
-                intent.putExtra("day", fragment.monthly_calendar.selectedDate!!.day)
+            when (pos) {
+                MONTH -> {
+                    year = monthly.monthly_calendar.selectedDate!!.year
+                    month = monthly.monthly_calendar.selectedDate!!.month
+                    day = monthly.monthly_calendar.selectedDate!!.day
+                }
+                WEEK -> {
+                    year = weekly.weekly_calendar.selectedDate!!.year
+                    month = weekly.weekly_calendar.selectedDate!!.month
+                    day = weekly.weekly_calendar.selectedDate!!.day
+                }
+                DAY -> {
+                    val date = daily.getDisplayingDay()
+                    year = date.year
+                    month = date.month
+                    day = date.day
 
-            } else if (pos == 1) {
-                val fragment: Fragment = weekly
-                intent.putExtra("year", fragment.weekly_calendar.selectedDate!!.year)
-                intent.putExtra("month", fragment.weekly_calendar.selectedDate!!.month)
-                intent.putExtra("day", fragment.weekly_calendar.selectedDate!!.day)
+                }
             }
 
-            startActivityForResult(intent, SCHEDULE_CODE)
+            Log.e(TAG, String.format("%d - %d - %d", year, month, day))
+            checkNRemove(year, month, day)
+
         }
 
     }
@@ -168,8 +180,44 @@ class MainActivity : AppCompatActivity() {
                 when (main_tablayout.selectedTabPosition) {
                     MONTH -> monthly.monthly_calendar.refreshDrawableState()
                     WEEK -> weekly.weekly_calendar.refreshDrawableState()
+                    DAY -> daily.refreshList()
                 }
             }
         }
+    }
+
+    private fun checkNRemove(year: Int, month: Int, day: Int) {
+        val inputDay = CalendarDay.from(year, month, day)
+
+        if (schedules.contains(inputDay))
+            AlertDialog.Builder(this)
+                .setTitle("확인")
+                .setMessage("일정은 하루에 한개만 등록 가능합니다.\n기존일정을 삭제하시겠습니까? ")
+                .setPositiveButton("확인") { di, _ ->
+                    val thread = Thread {
+                        ScheduleDatabase.getInstance(context)!!
+                            .getScheduleDAO().delete(String.format("%04d%02d%02d", year, month, day))
+
+                        schedules.remove(inputDay)
+                        startScheduleActivity(year, month, day)
+                        di.dismiss()
+                    }
+                    thread.start()
+                }
+                .setNegativeButton("취소") { di, _ -> di.cancel() }
+                .show()
+        else
+            startScheduleActivity(year, month, day)
+    }
+
+    private fun startScheduleActivity(year: Int, month: Int, day: Int) {
+
+        val intent = Intent(this, ScheduleActivity::class.java)
+
+        intent.putExtra("year", year)
+        intent.putExtra("month", month)
+        intent.putExtra("day", day)
+
+        startActivityForResult(intent, SCHEDULE_CODE)
     }
 }

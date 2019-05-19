@@ -5,14 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import kotlinx.android.synthetic.main.fragment_monthly.*
-import kotlinx.android.synthetic.main.fragment_weekly.*
 import summer_codding.gfriend_yerin.calander.Decorator.ScheduleDecorator
 import summer_codding.gfriend_yerin.calander.Decorator.TodayDecorator
 import summer_codding.gfriend_yerin.calander.R
+import java.time.LocalDate
 import java.util.*
 
 class MonthlyFragment : Fragment() {

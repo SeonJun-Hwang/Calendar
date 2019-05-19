@@ -1,38 +1,42 @@
 package summer_codding.gfriend_yerin.calander
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.daily_page.view.*
-import java.util.*
+import androidx.viewpager.widget.PagerAdapter
+import kotlinx.android.synthetic.main.item_pager.view.*
+import summer_codding.gfriend_yerin.calander.Data.ScheduleVO
+import kotlin.collections.ArrayList
 
-class DailyAdapter(val context : Context, val scheduleList : ArrayList<String>) : RecyclerView.Adapter<DailyAdapter.ViewHolder>() {
+class DailyAdapter(val context: Context, private val scheduleList: ArrayList<ScheduleVO>) : PagerAdapter() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-        val view = LayoutInflater.from(context).inflate(R.layout.daily_page, parent, false)
-        return ViewHolder(view)
+    override fun isViewFromObject(view: View, `object`: Any): Boolean {
+        return view == `object` as View
     }
 
-    override fun getItemCount(): Int {
+    override fun getCount(): Int {
         return scheduleList.size
     }
 
-    override fun onBindViewHolder(viewholder: ViewHolder, position: Int) {
-
-        val schedule = scheduleList[position]
-
-        viewholder.bind(position + 1, schedule.ifEmpty { "일정이 없습니다." })
+    override fun getItemPosition(`object`: Any): Int {
+        return super.getItemPosition(`object`)
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
 
-        fun bind(day : Int, plan: String) {
-            itemView.daily_date.text = day.toString() + "일"
-            itemView.daily_schedule.text = plan
-        }
+        val layout = LayoutInflater.from(context).inflate(R.layout.item_pager, container, false)
 
+        val cur = scheduleList[position].date
+
+        layout.pager_item_date.text = String.format("%04d/%02d/%02d", cur.year, cur.month, cur.day)
+        layout.pager_item_contents.text = scheduleList[position].contents
+        container.addView(layout)
+
+        return layout
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+        container.removeView(`object` as View)
     }
 }
