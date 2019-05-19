@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="colorSplashBack">#ffffff</color>
+    <color name="colorMainBottomBack">#C0C0C0</color>
+
+    <color name="greyed_out">#979797</color>
+    <color name="today_color">#4CAF50</color>
+    <color name="select_color">#FFCE8B</color>
+</resources>
