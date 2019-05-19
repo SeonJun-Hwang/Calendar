@@ -9,6 +9,7 @@
             android:layout_width="match_parent"
             app:mcv_firstDayOfWeek="sunday"
             app:mcv_selectionMode="single"
+            app:mcv_selectionColor="@color/select_color"
             android:layout_height="wrap_content"/>
 
 </FrameLayout>

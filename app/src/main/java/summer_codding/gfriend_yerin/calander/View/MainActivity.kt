@@ -12,13 +12,10 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import summer_codding.gfriend_yerin.calander.BuildConfig
 import summer_codding.gfriend_yerin.calander.R
-import summer_codding.gfriend_yerin.calander.ViewPagerAdapter
-import com.facebook.stetho.Stetho.initializeWithDefaults
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import kotlinx.android.synthetic.main.fragment_monthly.*
 import kotlinx.android.synthetic.main.fragment_weekly.*
 import summer_codding.gfriend_yerin.calander.Data.ScheduleDatabase
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
@@ -26,32 +23,34 @@ class MainActivity : AppCompatActivity() {
     private val TAG: String = "MainActivity"
     private lateinit var context: Context
     private var backPressTime = 0L
+    private val monthly: MonthlyFragment = MonthlyFragment()
+    private val weekly: WeeklyFragment = WeeklyFragment()
+    private val daily: DailyFragment = DailyFragment()
 
     companion object {
         var today = 0L
         private const val SCHEDULE_CODE: Int = 100
         val schedules: HashMap<CalendarDay, String> = HashMap()
+
+        private val MONTH = 0
+        private val WEEK = 1
+        private val DAY = 2
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Stetho
-        initializeWithDefaults(this)
-
         context = this
         today = System.currentTimeMillis()
 
         initScheduleArray()
-        initTabLayout()
-        initViewPager()
-        initFirstPage()
         initFloating()
+        initTabLayout()
+        initFirstPage()
     }
 
     private fun initScheduleArray() {
-
         val thread = Thread(Runnable {
             val dataList = ScheduleDatabase.getInstance(context)!!
                 .getScheduleDAO().getAllData()
@@ -60,10 +59,15 @@ class MainActivity : AppCompatActivity() {
             for (data in dataList) {
                 Log.e(TAG, data.date + " - " + data.contents)
                 val toInt = data.date.toInt()
-                schedules[CalendarDay.from(toInt / 1000, (toInt / 100) % 100, toInt % 100)] = data.contents
-            } } )
-        thread.start()
 
+                // MONTH - DIV 10000 ( <yyyy>mmdd )
+                // Week - DIV 100 % 100 ( (yyyy<mm>)dd )
+                // Day - DIV % 100 ( yyyymm(dd))
+                schedules[CalendarDay.from(toInt / 10000, (toInt / 100) % 100, toInt % 100)] = data.contents
+
+            }
+        })
+        thread.start()
     }
 
     private fun initTabLayout() {
@@ -76,8 +80,16 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (tab != null)
-                    main_viewpager.currentItem = tab.position
+                val pos = tab?.position
+
+                val transaction = supportFragmentManager.beginTransaction()
+
+                when (pos) {
+                    MONTH -> transaction.replace(R.id.main_frame_viewer, monthly).commit()
+                    WEEK -> transaction.replace(R.id.main_frame_viewer, weekly).commit()
+                    DAY -> transaction.replace(R.id.main_frame_viewer, daily).commit()
+                }
+
             }
 
             override fun onTabReselected(p0: TabLayout.Tab?) {
@@ -86,25 +98,21 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun initViewPager() {
-        val fragmentList: MutableList<Fragment> = ArrayList()
-
-        fragmentList.add(MonthlyFragment())
-        fragmentList.add(WeeklyFragment())
-        fragmentList.add(DailyFragment())
-
-        val viewPager = ViewPagerAdapter(fragmentList, supportFragmentManager)
-
-        main_viewpager.adapter = viewPager
-
-        main_viewpager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(main_tablayout))
-    }
-
     private fun initFirstPage() {
         val pref = getSharedPreferences(BuildConfig.PREF_NAME, MODE_PRIVATE)
         val lastPage = pref.getInt(BuildConfig.PREF_FIELD_NAME, 0)
 
-        main_viewpager.currentItem = lastPage
+        Log.e(TAG, "Last Page $lastPage")
+
+        main_tablayout.getTabAt(lastPage)?.select()
+
+        val transaction = supportFragmentManager.beginTransaction()
+
+        when (lastPage) {
+            MONTH -> transaction.replace(R.id.main_frame_viewer, monthly).commit()
+            WEEK -> transaction.replace(R.id.main_frame_viewer, weekly).commit()
+            DAY -> transaction.replace(R.id.main_frame_viewer, daily).commit()
+        }
     }
 
     private fun initFloating() {
@@ -114,16 +122,16 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ScheduleActivity::class.java)
 
             if (pos == 0) {
-                val fragment: Fragment = supportFragmentManager.fragments[0]
-                intent.putExtra("year", fragment.monthly_calendar.selectedDate?.year)
-                intent.putExtra("month", fragment.monthly_calendar.selectedDate?.month)
-                intent.putExtra("day", fragment.monthly_calendar.selectedDate?.day)
+                val fragment: Fragment = monthly
+                intent.putExtra("year", fragment.monthly_calendar.selectedDate!!.year)
+                intent.putExtra("month", fragment.monthly_calendar.selectedDate!!.month)
+                intent.putExtra("day", fragment.monthly_calendar.selectedDate!!.day)
 
             } else if (pos == 1) {
-                val fragment: Fragment = supportFragmentManager.fragments[1]
-                intent.putExtra("year", fragment.weekly_calendar.selectedDate?.year)
-                intent.putExtra("month", fragment.weekly_calendar.selectedDate?.month)
-                intent.putExtra("day", fragment.weekly_calendar.selectedDate?.day)
+                val fragment: Fragment = weekly
+                intent.putExtra("year", fragment.weekly_calendar.selectedDate!!.year)
+                intent.putExtra("month", fragment.weekly_calendar.selectedDate!!.month)
+                intent.putExtra("day", fragment.weekly_calendar.selectedDate!!.day)
             }
 
             startActivityForResult(intent, SCHEDULE_CODE)
@@ -134,8 +142,10 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         val pref = getSharedPreferences(BuildConfig.PREF_NAME, Context.MODE_PRIVATE)
         val editor = pref.edit()
-        editor.putInt(BuildConfig.PREF_FIELD_NAME, main_viewpager.currentItem)
+        editor.putInt(BuildConfig.PREF_FIELD_NAME, main_tablayout.selectedTabPosition)
         editor.apply()
+
+        Log.e(TAG, "Last Page ${main_tablayout.selectedTabPosition}")
 
         super.onStop()
     }
@@ -155,7 +165,10 @@ class MainActivity : AppCompatActivity() {
 
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SCHEDULE_CODE) {
-
+                when (main_tablayout.selectedTabPosition) {
+                    MONTH -> monthly.monthly_calendar.refreshDrawableState()
+                    WEEK -> weekly.weekly_calendar.refreshDrawableState()
+                }
             }
         }
     }

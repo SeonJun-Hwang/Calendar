@@ -9,4 +9,5 @@
 
     <color name="greyed_out">#979797</color>
     <color name="today_color">#4CAF50</color>
+    <color name="select_color">#FFCE8B</color>
 </resources>

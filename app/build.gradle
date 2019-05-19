@@ -36,8 +36,12 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0-beta01'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-beta01'
 
+    // org Three teen
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.0'
+
     // Stetho
     implementation 'com.facebook.stetho:stetho:1.4.1'
+    implementation 'com.facebook.stetho:stetho-js-rhino:1.4.2'
 
     // Room
     def room_version = "2.1.0-beta01"

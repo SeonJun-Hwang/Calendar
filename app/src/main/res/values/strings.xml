@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Calander</string>
+    <string name="app_name">Calendar</string>
 
     <string name="item_monthly">Monthly</string>
     <string name="item_weekly">Weekly</string>

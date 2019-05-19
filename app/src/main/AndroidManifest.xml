@@ -10,12 +10,12 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
-            tools:replace="android:appComponentFactory"
-            android:screenOrientation="portrait">
+            tools:replace="android:appComponentFactory">
         <activity
                 android:name=".View.ScheduleActivity"
                 android:label="@string/schedule_label"
                 android:windowSoftInputMode="adjustResize"
+                android:screenOrientation="portrait"
         >
         </activity>
         <activity
@@ -27,7 +27,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".View.MainActivity">
+        <activity android:name=".View.MainActivity"
+                  android:screenOrientation="portrait">
         </activity>
     </application>
 

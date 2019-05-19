@@ -13,14 +13,14 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.viewpager.widget.ViewPager
-            android:id="@+id/main_viewpager"
+    <FrameLayout
+            android:id="@+id/main_frame_viewer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintTop_toBottomOf="@id/main_tablayout"
             app:layout_constraintBottom_toBottomOf="parent">
 
-    </androidx.viewpager.widget.ViewPager>
+    </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/main_add_schedule"
