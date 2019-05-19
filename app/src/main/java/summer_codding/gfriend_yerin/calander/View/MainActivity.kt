@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.tabs.TabLayout
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,12 @@ import summer_codding.gfriend_yerin.calander.BuildConfig
 import summer_codding.gfriend_yerin.calander.R
 import summer_codding.gfriend_yerin.calander.ViewPagerAdapter
 import com.facebook.stetho.Stetho.initializeWithDefaults
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import kotlinx.android.synthetic.main.fragment_monthly.*
+import kotlinx.android.synthetic.main.fragment_weekly.*
+import summer_codding.gfriend_yerin.calander.Data.ScheduleDatabase
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,24 +29,41 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var today = 0L
-        var lastID: Long = 0L
-        var selectedTime = -1L
         private const val SCHEDULE_CODE: Int = 100
+        val schedules: HashMap<CalendarDay, String> = HashMap()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Stetho
         initializeWithDefaults(this)
 
         context = this
         today = System.currentTimeMillis()
 
+        initScheduleArray()
         initTabLayout()
         initViewPager()
         initFirstPage()
         initFloating()
+    }
+
+    private fun initScheduleArray() {
+
+        val thread = Thread(Runnable {
+            val dataList = ScheduleDatabase.getInstance(context)!!
+                .getScheduleDAO().getAllData()
+
+            // Arraylist to HashMap
+            for (data in dataList) {
+                Log.e(TAG, data.date + " - " + data.contents)
+                val toInt = data.date.toInt()
+                schedules[CalendarDay.from(toInt / 1000, (toInt / 100) % 100, toInt % 100)] = data.contents
+            } } )
+        thread.start()
+
     }
 
     private fun initTabLayout() {
@@ -66,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         val fragmentList: MutableList<Fragment> = ArrayList()
 
         fragmentList.add(MonthlyFragment())
-        fragmentList.add(WeeklyFragment.newInstance())
+        fragmentList.add(WeeklyFragment())
         fragmentList.add(DailyFragment())
 
         val viewPager = ViewPagerAdapter(fragmentList, supportFragmentManager)
@@ -87,17 +111,28 @@ class MainActivity : AppCompatActivity() {
         main_add_schedule.setOnClickListener {
 
             val pos = main_tablayout.selectedTabPosition
+            val intent = Intent(this, ScheduleActivity::class.java)
 
-            if (selectedTime != -1L){
-                val intent: Intent = Intent(this, ScheduleActivity::class.java)
-                startActivityForResult(intent, SCHEDULE_CODE)
+            if (pos == 0) {
+                val fragment: Fragment = supportFragmentManager.fragments[0]
+                intent.putExtra("year", fragment.monthly_calendar.selectedDate?.year)
+                intent.putExtra("month", fragment.monthly_calendar.selectedDate?.month)
+                intent.putExtra("day", fragment.monthly_calendar.selectedDate?.day)
+
+            } else if (pos == 1) {
+                val fragment: Fragment = supportFragmentManager.fragments[1]
+                intent.putExtra("year", fragment.weekly_calendar.selectedDate?.year)
+                intent.putExtra("month", fragment.weekly_calendar.selectedDate?.month)
+                intent.putExtra("day", fragment.weekly_calendar.selectedDate?.day)
             }
+
+            startActivityForResult(intent, SCHEDULE_CODE)
         }
 
     }
 
     override fun onStop() {
-        val pref = getSharedPreferences(BuildConfig.PREF_NAME, Context.MODE_PRIVATE);
+        val pref = getSharedPreferences(BuildConfig.PREF_NAME, Context.MODE_PRIVATE)
         val editor = pref.edit()
         editor.putInt(BuildConfig.PREF_FIELD_NAME, main_viewpager.currentItem)
         editor.apply()

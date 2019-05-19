@@ -2,18 +2,17 @@ package summer_codding.gfriend_yerin.calander
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.daily_recycle_item.view.*
+import kotlinx.android.synthetic.main.daily_page.view.*
 import java.util.*
 
 class DailyAdapter(val context : Context, val scheduleList : ArrayList<String>) : RecyclerView.Adapter<DailyAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
-        val view = LayoutInflater.from(context).inflate(R.layout.daily_recycle_item, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.daily_page, parent, false)
         return ViewHolder(view)
     }
 

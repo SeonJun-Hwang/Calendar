@@ -25,18 +25,6 @@ class DailyFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_daily, container, false)
 
-        val itemList = ArrayList<String>(31)
-
-        for (i in 1 .. 31)
-            itemList.add("")
-
-        view.daily_recycler.layoutManager = LinearLayoutManager(view.context)
-        view.daily_recycler.adapter = DailyAdapter(view.context, itemList)
-
-        view.daily_go_before_month.setOnClickListener({  })
-        view.daily_go_next_month.setOnClickListener({ })
-
-
         return view
     }
 

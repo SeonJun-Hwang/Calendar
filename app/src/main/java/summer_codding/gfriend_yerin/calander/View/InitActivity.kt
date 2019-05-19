@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import summer_codding.gfriend_yerin.calander.Data.ScheduleDatabase
 
 class InitActivity : AppCompatActivity() {
 
@@ -11,8 +12,12 @@ class InitActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         Handler().postDelayed({
+
+            // Init Database
+            ScheduleDatabase.getInstance(this)
+
             // TODO : Init Database
-            val intent: Intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         }, 1300)

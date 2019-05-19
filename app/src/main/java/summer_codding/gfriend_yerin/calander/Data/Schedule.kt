@@ -7,9 +7,6 @@ import org.jetbrains.annotations.NotNull
 @Entity
 class Schedule (
     @PrimaryKey val id: Long,
-    @NotNull val year: Int,
-    @NotNull val month: Int,
-    @NotNull val day: Int,
-    @NotNull val contents : String,
-    val isDeleted : Boolean = false
+    @NotNull val date : String,
+    @NotNull val contents : String
     )

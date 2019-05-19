@@ -10,11 +10,13 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
-            tools:replace="android:appComponentFactory">
+            tools:replace="android:appComponentFactory"
+            android:screenOrientation="portrait">
         <activity
                 android:name=".View.ScheduleActivity"
                 android:label="@string/schedule_label"
-                android:windowSoftInputMode="adjustResize">
+                android:windowSoftInputMode="adjustResize"
+        >
         </activity>
         <activity
                 android:name=".View.InitActivity"

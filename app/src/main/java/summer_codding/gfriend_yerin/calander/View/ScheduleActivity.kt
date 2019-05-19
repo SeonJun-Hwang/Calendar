@@ -24,6 +24,8 @@ class ScheduleActivity : AppCompatActivity() {
         val month = intent.getIntExtra("month", 5)
         val day = intent.getIntExtra("day", 19)
 
+        supportActionBar?.title = year.toString() + "년 " + month.toString() + "월 " + day.toString() + "일 일정 추가"
+
         schedule_register.setOnClickListener {
             val contents = schedule_contents.text.toString()
             if (contents.isBlank()) {
@@ -33,14 +35,18 @@ class ScheduleActivity : AppCompatActivity() {
                     .setPositiveButton("확인") { diface, _ -> diface.cancel() }
                     .show()
             } else {
-                val schedule = Schedule(++MainActivity.lastID, year, month, day, contents)
 
-                ScheduleDatabase.getInstance(context)!!
-                    .getSecheduleDAO()
-                    .pushData(schedule)
+                val schedule = Schedule(System.nanoTime(), String.format("%4d%2d%2d", year, month, day), contents)
 
-                setResult(RESULT_OK)
-                finish()
+                val thread = Thread(Runnable {
+                    ScheduleDatabase.getInstance(context)!!
+                        .getScheduleDAO()
+                        .pushData(schedule)
+
+                    setResult(RESULT_OK)
+                    finish()
+                })
+                thread.start()
             }
 
         }
@@ -52,7 +58,8 @@ class ScheduleActivity : AppCompatActivity() {
             .setMessage("현재 작성한 내용이 지워집니다.\n계속하시겠습니까?")
             .setPositiveButton("예") { _, _ ->
                 setResult(Activity.RESULT_CANCELED)
-                finish() }
+                finish()
+            }
             .setNegativeButton("취소") { di, _ -> di.cancel() }
             .show()
     }
