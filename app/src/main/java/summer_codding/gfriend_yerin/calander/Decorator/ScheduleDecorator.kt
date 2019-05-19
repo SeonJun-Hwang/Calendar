@@ -7,7 +7,7 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade
 import android.graphics.drawable.Drawable
 
 class ScheduleDecorator(
-    val dates: HashMap<CalendarDay, String>,
+    private val dates: HashMap<CalendarDay, String>,
     val drawable: Drawable
 ) : DayViewDecorator {
 
