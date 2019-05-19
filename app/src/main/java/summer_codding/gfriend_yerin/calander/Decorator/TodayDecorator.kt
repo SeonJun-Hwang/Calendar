@@ -24,6 +24,5 @@ class TodayDecorator(val drawable : Drawable) : DayViewDecorator {
         view.addSpan(StyleSpan(Typeface.BOLD))
         view.addSpan(RelativeSizeSpan(1.2f))
         view.addSpan(ForegroundColorSpan(Color.MAGENTA))
-        view.setSelectionDrawable(drawable)
     }
 }
